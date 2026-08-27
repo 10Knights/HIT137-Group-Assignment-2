@@ -4,10 +4,10 @@
 Group Assignment 2
 
 ## Group Members
-- Member 1 – 10Knights / s402281
-- Member 2 – GitHub username / Student ID
-- Member 3 – GitHub username / Student ID
-- Member 4 – GitHub username / Student ID
+- Member 1 – 10Knights 
+- Member 2 – GitHub username 
+- Member 3 – GitHub username 
+- Member 4 – GitHub username 
 
 ## Description
 
