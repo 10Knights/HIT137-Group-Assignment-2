@@ -6,7 +6,7 @@ Group Assignment 2
 ## Group Members
 - Member 1 – 10Knights 
 - Member 2 – Matt-HIT137
-- Member 3 – GitHub username 
+- Member 3 – cajohns99-a11y 
 - Member 4 – GitHub username 
 
 ## Description
