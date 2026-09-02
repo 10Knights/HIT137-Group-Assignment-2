@@ -1,16 +1,16 @@
 "This script is able to read a text file, encrypt the text, then decrypt it ensuring the decrypted text matches the original."
 
 # First Shift integer is requested
-shift1 = int(input("Enter First Cypher Number: ")) 
+shift1 = int(input("Enter First Cipher Number: ")) 
 if shift1 <=0: # If the integer is less than or equal to zero it will reask for a value higher than zero
-    print ("First cypher number must be greater than 0") 
-    shift1 = int(input("Enter Cypher Number Greater than Zero: "))
+    print ("First Cipher number must be greater than 0") 
+    shift1 = int(input("Enter Cipher Number Greater than Zero: "))
 
 # Second integer value which works with the same input ideal.
-shift2 = int(input("Enter Second Cypher Number: "))
+shift2 = int(input("Enter Second Cipher Number: "))
 if shift2 <=0:
-    print("Secondary cypher number must be greater than 0")
-    shift2 = int(input("Enter Second Cypher Number Greater than Zero: "))
+    print("Secondary Cipher number must be greater than 0")
+    shift2 = int(input("Enter Second Cipher Number Greater than Zero: "))
     
 input_path = input("Enter input file path: ") # Path the original text file is located.
 encrypted_path = input("Enter output file path: ") # The location which the encrypted file is to be located.
