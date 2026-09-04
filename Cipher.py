@@ -4,16 +4,16 @@
 # First Shift integer is requested
 shift1 = 0 # Defining shift so that it can be used in the while loop below.
 while shift1 <= 0: # If the integer is less than or equal to zero it will reask for a value higher than zero
-    shift1 = int(input("Enter First Cypher Number: ")) 
+    shift1 = int(input("Enter 1st Cipher Number > 0: ")) 
     if shift1 <= 0:
-        print ("First cypher number must be greater than 0")
+        print ("***Cipher number must be greater than 0***")
         
 # Second integer value which works with the same input ideal.
 shift2 = 0 # Defining shift so that it can be used in the while loop below.
 while shift2 <= 0:
-    shift2 = int(input("Enter Second Cypher Number: "))
+    shift2 = int(input("Enter 2nd Cypher Number > 0: "))
     if shift2 <= 0:
-        print("Secondary cypher number must be greater than 0")
+        print("***Cipher number must be greater than 0***")
     
 input_path = input("Enter input file path: ") # Path the original text file is located.
 encrypted_path = input("Enter output file path: ") # The location which the encrypted file is to be located.
