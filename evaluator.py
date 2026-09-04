@@ -30,7 +30,7 @@ def tokenize(expression: str) -> list:
 
         char = expression[i]
 
-        # ignores spacse
+        # ignores spaces
         
         if char.isspace():
             i += 1
