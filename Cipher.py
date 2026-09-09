@@ -87,9 +87,9 @@ def decrypt_file(shift1: int, shift2: int, encrypted_path: str, decrypted_path: 
 decrypt_file(shift1, shift2, encrypted_path, decrypted_path) # Ends the function
 
 """This function compares the decrypted file vs raw text and verifies the encryption / decryption is correct."""
-def verify_files(original_path: str, decrypted_path: str) -> bool: # Defines both files within the function.
+def verify_files(input_path: str, decrypted_path: str) -> bool: # Defines both files within the function.
 
-    with open(original_path, 'r') as original_file: # Reads original text.
+    with open(input_path, 'r') as original_file: # Reads original text.
         original_content = original_file.read()
 
     with open(decrypted_path, 'r') as decrypted_file: # Reads decrypted text.
