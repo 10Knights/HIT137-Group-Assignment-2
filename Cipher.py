@@ -1,20 +1,21 @@
 "HIT137 Assignment 2 - Question 2 - Cipher Script"
-"This script is able to read a text file, encrypt the text, then decrypt it ensuring the decrypted text matches the original."
+"This script is able to read raw_text.txt file, encrypt the text, then decrypt it ensuring the decrypted text matches the original."
 
 # First Shift integer is requested
 shift1 = -1 # Defining shift so that it can be used in the while loop below.
-while shift1 < 0: # If the integer is less than or equal to zero it will reask for a value of zero or greater
-    shift1 = int(input("Enter 1st Cipher Number > 0: ")) 
-    if shift1 < 0:
-        print ("***Cipher number must be 0 or greater***")
+while shift1 < 0: # If the integer is less than zero it will reask for a value of zero or greater
+    shift1 = int(input("Enter 1st Cipher Number >= 0: ")) # Request an integer greater than or equal to zero
+    if shift1 < 0: 
+        print ("***Cipher number must be 0 or greater***") # The request for a value if the use inputs an integer less than zero (negative number)
         
-# Second integer value which works with the same input ideal.
+# Second integer input which works the same as the previous input.
 shift2 = -1 # Defining shift so that it can be used in the while loop below.
 while shift2 < 0:
-    shift2 = int(input("Enter 2nd Cypher Number > 0: "))
+    shift2 = int(input("Enter 2nd Cypher Number >= 0: "))
     if shift2 < 0:
         print("***Cipher number must be 0 or greater***")
-    
+
+# Defines the files
 input_path = "raw_text.txt" 
 encrypted_path = "encrypted_text.txt"
 decrypted_path = "decrypted_text.txt"
@@ -34,7 +35,7 @@ def encrypt_file(shift1: int, shift2: int, input_path: str, output_path: str) ->
 
     encrypted = ""
     "This sequence converts the alpha / numerical character to it's ASCII code."
-    "Applies the Shift but keeps it within a loop of ie a-n by using %."
+    "Applies the Shift but keeps it within a loop of it's group ie a-n by using % 14."
     "Converts it back into it's character then inputs into the string."
     "Characters which are not in the groups below are left as they are."
     for char in content:
@@ -51,12 +52,12 @@ def encrypt_file(shift1: int, shift2: int, input_path: str, output_path: str) ->
         
         else:
             encrypted += char         
-    with open(output_path, 'w') as file: # Writes the encrypted file to the desired location.
+    with open(output_path, 'w') as file: # Writes the encrypted file encrypted_text.txt.
           file.write(encrypted)
 
-encrypt_file(shift1, shift2, input_path, encrypted_path) # End the function.
+encrypt_file(shift1, shift2, input_path, encrypted_path) # End of this function.
 
-"This function decrypts the previously encrypted file using the same method as above but in reverse."
+"This function decrypts the previously encrypted file using the same method as above with the characters done in reverse order."
 def decrypt_file(shift1: int, shift2: int, encrypted_path: str, decrypted_path: str):
     multiply = shift1 * shift2
     addition = shift1 + shift2
@@ -85,8 +86,7 @@ def decrypt_file(shift1: int, shift2: int, encrypted_path: str, decrypted_path: 
         file.write(decrypted)
 decrypt_file(shift1, shift2, encrypted_path, decrypted_path) # Ends the function
 
-"""Verifies decription and verification process"""
-
+"""This function compares the decrypted file vs raw text and verifies the encryption / decryption is correct."""
 def verify_files(original_path: str, decrypted_path: str) -> bool: # Defines both files within the function.
 
     with open(original_path, 'r') as original_file: # Reads original text.
