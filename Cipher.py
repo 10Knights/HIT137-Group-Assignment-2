@@ -2,14 +2,14 @@
 "This script is able to read a text file, encrypt the text, then decrypt it ensuring the decrypted text matches the original."
 
 # First Shift integer is requested
-shift1 = 0 # Defining shift so that it can be used in the while loop below.
-while shift1 < 0: # If the integer is less than or equal to zero it will reask for a value higher than zero
+shift1 = -1 # Defining shift so that it can be used in the while loop below.
+while shift1 < 0: # If the integer is less than or equal to zero it will reask for a value of zero or greater
     shift1 = int(input("Enter 1st Cipher Number > 0: ")) 
     if shift1 < 0:
         print ("***Cipher number must be 0 or greater***")
         
 # Second integer value which works with the same input ideal.
-shift2 = 0 # Defining shift so that it can be used in the while loop below.
+shift2 = -1 # Defining shift so that it can be used in the while loop below.
 while shift2 < 0:
     shift2 = int(input("Enter 2nd Cypher Number > 0: "))
     if shift2 < 0:
@@ -57,13 +57,13 @@ def encrypt_file(shift1: int, shift2: int, input_path: str, output_path: str) ->
 encrypt_file(shift1, shift2, input_path, encrypted_path) # End the function.
 
 "This function decrypts the previously encrypted file using the same method as above but in reverse."
-def decrypt_file(shift1: int, shift2: int, output_path: str, decrypted_path: str):
+def decrypt_file(shift1: int, shift2: int, encrypted_path: str, decrypted_path: str):
     multiply = shift1 * shift2
     addition = shift1 + shift2
     square = shift2**2
     subtraction = shift1 - shift2
 
-    with open(input_path, 'r') as file:
+    with open(encrypted_path, 'r') as file:
         encrypted = file.read()
 
     decrypted = ""
@@ -81,13 +81,13 @@ def decrypt_file(shift1: int, shift2: int, output_path: str, decrypted_path: str
                 decrypted += chr(ord('a') + (ord(char) - ord('a') - multiply) % 14)
             else:
                 decrypted += char
-    with open(output_path, 'w') as file: # Writes the decrypted file to the desired location.
+    with open(decrypted_path, 'w') as file: # Writes the decrypted file to the desired location.
         file.write(decrypted)
 decrypt_file(shift1, shift2, encrypted_path, decrypted_path) # Ends the function
 
 """Verifies decription and verification process"""
 
-def verify_files(input_path: str, decrypted_path: str) -> bool: # Defines both files within the function.
+def verify_files(original_path: str, decrypted_path: str) -> bool: # Defines both files within the function.
 
     with open(original_path, 'r') as original_file: # Reads original text.
         original_content = original_file.read()
