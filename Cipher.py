@@ -1,5 +1,9 @@
-"HIT137 Assignment 2 - Question 2 - Cipher Script"
-"This script is able to read raw_text.txt file, encrypt the text, then decrypt it ensuring the decrypted text matches the original."
+"""HIT137 Group 2 - Assignment 2 - Question 1 - Cipher Script
+Member 1 – 10Knights - Joshua Sexton
+Member 2 – Matt-HIT137 - Matthew Capel
+Member 3 – cajohns99-a11y - Cameron Johns
+Member 4 – Akai221- Dantae - Dantae Babic
+This script is able to read raw_text.txt file, encrypt the text, then decrypt it ensuring the decrypted text matches the original."""
 
 # First Shift integer is requested
 shift1 = -1 # Defining shift so that it can be used in the while loop below.
@@ -34,10 +38,10 @@ def encrypt_file(shift1: int, shift2: int, input_path: str, output_path: str) ->
         content = file.read()
 
     encrypted = ""
-    "This sequence converts the alpha / numerical character to it's ASCII code."
-    "Applies the Shift but keeps it within a loop of it's group ie a-n by using % 14."
-    "Converts it back into it's character then inputs into the string."
-    "Characters which are not in the groups below are left as they are."
+    """This sequence converts the alpha / numerical character to it's ASCII code.
+    Applies the Shift but keeps it within a loop of it's group ie a-n by using % 14.
+    Converts it back into it's character then inputs into the string.
+    Characters which are not in the groups below are left as they are."""
     for char in content:
         if 'a' <= char <= 'n':
             encrypted += chr(ord('a') + (ord(char) - ord('a') + multiply) % 14)
@@ -57,7 +61,7 @@ def encrypt_file(shift1: int, shift2: int, input_path: str, output_path: str) ->
 
 encrypt_file(shift1, shift2, input_path, encrypted_path) # End of this function.
 
-"This function decrypts the previously encrypted file using the same method as above with the characters done in reverse order."
+"""This function decrypts the previously encrypted file using the same method as above with the characters done in reverse order."""
 def decrypt_file(shift1: int, shift2: int, encrypted_path: str, decrypted_path: str):
     multiply = shift1 * shift2
     addition = shift1 + shift2
