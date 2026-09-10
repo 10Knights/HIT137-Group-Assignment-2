@@ -227,8 +227,8 @@ def process_evaluation(node):
 
     return tree_str, result   
     
-input_file = "sample_input.txt"
-output_file = "sample_output.txt"
+input_file = "input.txt"
+output_file = "output_results.txt"
 
 """Reads expressions from an input file, tokenizes, parses, and evaluates them.
 The results, are stored in a list of dictionaries and written to an output file."""
