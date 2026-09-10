@@ -1,0 +1,283 @@
+
+
+
+def tokenize(expression: str) -> list:
+    """Converts expressions into a list of valid tokens types only
+    NUM,OP,LPAREN,RPAREN,END
+
+    unary minus is stored as a OP- token rather than
+    being included in number"""
+    
+    tokens = []
+    i = 0
+
+    while i < len(expression):
+        char = expression[i]
+
+        # ignores spaces        
+        if char.isspace():
+            i += 1
+            continue
+        
+        if char.isdigit():
+            start = i
+
+            # read the integer portion and check for decimal points
+            while i < len(expression) and expression[i].isdigit():
+                i += 1
+            if i < len(expression) and expression[i] == ".":
+                i += 1
+
+                # decimal points must have one digit after it
+                if i >= len(expression) or not expression[i].isdigit():
+                    raise ValueError("Invalid number")
+                while i < len(expression) and expression[i].isdigit():
+                    i += 1
+
+            number_text = expression[start:i]
+            if i < len(expression) and expression[i] == ".":
+                raise ValueError("Invalid number")
+
+            tokens.append(("NUM", number_text))
+            continue
+# Operators        
+        if char in "+-*/%^":
+            tokens.append(("OP", char))
+            i += 1
+            continue
+        
+        # Opening and closing parenthesis
+        if char == "(":
+            tokens.append(("LPAREN", char))
+            i += 1
+            continue
+
+        if char == ")":
+            tokens.append(("RPAREN", char))
+            i += 1
+            continue
+       
+        # other characters are invalid        
+        raise ValueError("Invalid character")
+
+    # Adding END token
+    tokens.append(("END", ""))
+    return tokens
+
+def format_tokens(tokens: list) -> str:
+    """Converts internal tokens into the required output format"""
+
+    formatted = []
+    for token_type, value in tokens:
+        if token_type == "END":
+            formatted.append("[END]")
+
+        else:
+            formatted.append(f"[{token_type}:{value}]")
+
+    return " ".join(formatted)
+
+def parse(tokens):
+    if not tokens:
+        return None
+    try:
+        node, pos = parse_expression(tokens, 0)
+    except (ValueError, IndexError):
+        return None
+    if tokens[pos][0] != 'END':
+        return None
+    return node
+
+def parse_expression(tokens, pos):
+    node, pos = parse_term(tokens, pos)
+    while tokens[pos][0] == 'OP' and tokens[pos][1] in ('+', '-'):
+        op = tokens[pos][1]
+        pos += 1
+        right, pos = parse_term(tokens, pos)
+        node = ('bin', op, node, right)
+    return node, pos
+
+def parse_term(tokens, pos):
+    node, pos = parse_unary(tokens, pos)
+    while True:
+        tok_type, tok_val = tokens[pos]
+        if tok_type == 'OP' and tok_val in ('*', '/', '%'):
+            pos += 1
+            right, pos = parse_unary(tokens, pos)
+            node = ('bin', tok_val, node, right)
+        elif tok_type == 'LPAREN':
+            right, pos = parse_unary(tokens, pos)
+            node = ('bin', '*', node, right)
+        elif tok_type == 'NUM' and tokens[pos - 1][0] == 'RPAREN':
+            right, pos = parse_unary(tokens, pos)
+            node = ('bin', '*', node, right)
+        else:
+            break
+    return node, pos
+
+def parse_unary(tokens, pos):
+    tok_type, tok_val = tokens[pos]
+    if tok_type == 'OP' and tok_val == '-':
+        operand, pos = parse_unary(tokens, pos + 1)
+        return ('neg', operand), pos
+    return parse_power(tokens, pos)
+
+def parse_power(tokens, pos):
+    node, pos = parse_primary(tokens, pos)
+    tok_type, tok_val = tokens[pos]
+    if tok_type == 'OP' and tok_val == '^':
+        right, pos = parse_unary(tokens, pos + 1)
+        node = ('bin', '^', node, right)
+    return node, pos
+
+def parse_primary(tokens, pos):
+    tok_type, tok_val = tokens[pos]
+    if tok_type == 'NUM':
+        return ('num', float(tok_val)), pos + 1
+    if tok_type == 'LPAREN':
+        node, pos = parse_expression(tokens, pos + 1)
+        if tokens[pos][0] != 'RPAREN':
+            raise ValueError('expected )')
+        return node, pos + 1
+    raise ValueError('unexpected token')
+
+def tree_to_string(node):
+    if node is None:
+        return "ERROR"
+    kind = node[0]
+    if kind == 'num':
+        val = node[1]
+        if val == int(val):
+            return str(int(val))
+        return str(val)
+    if kind == 'neg':
+        return "(neg " + tree_to_string(node[1]) + ")"
+    op, left, right = node[1], node[2], node[3]
+    return "(" + op + " " + tree_to_string(left) + " " + tree_to_string(right) + ")"
+
+# ============================
+# Tree and Error Evaluation
+# ============================
+def evaluate_tree(node):
+    # returns (results, error message)
+    if node is None:
+        return None, "Parse Error"
+
+    kind = node[0]
+
+    # 1. number node: ('num', value)
+    if kind == 'num':
+        return node[1], None
+
+    # 2. Unary negation node: ('neg', operand)
+    if kind == 'neg':
+        val, err = evaluate_tree(node[1])
+        if err is not None:
+            return None, err 
+        return -val, None
+
+    # 3. Binary Operation node: ('bin', op, left, right)
+    if kind == 'bin':
+        op = node[1]
+        left_node = node[2]
+        right_node = node[3]
+        
+        left_val, err = evaluate_tree(left_node)
+        if err is not None:
+            return None, err
+
+        right_val, err = evaluate_tree(right_node)
+        if err is not None:
+            return None, err 
+
+        # Performing Calc 
+        if op == "+":
+            return left_val + right_val, None
+        elif op == '-':
+            return left_val - right_val, None 
+        elif op == '*':
+            return left_val * right_val, None 
+        elif op == '/':
+            if right_val == 0:
+                return None, "division by zero error"
+            return left_val / right_val, None
+        elif op == '%':
+            if right_val == 0:
+                return None, "Modulo by zero error"
+            return left_val % right_val, None
+        elif op == '^':
+            return left_val ** right_val, None
+        
+    return None, "Uncoded node"
+
+def process_evaluation(node):
+    # Gets the visual tree string from Dantae's functions
+    tree_str = tree_to_string(node)
+
+    if node is None:
+        return "ERROR", "ERROR"
+
+    result, err = evaluate_tree(node)
+    if err is not None:
+        return tree_str, "ERROR"
+
+    # formatting to float to integer if its a whole number (eg: 6.0 -> 6)
+    if isinstance(result, float) and result.is_integer():
+        result = int(result)
+
+    return tree_str, result   
+    
+input_file = "sample_input.txt"
+output_file = "sample_output.txt"
+
+"""Reads expressions from an input file, tokenizes, parses, and evaluates them.
+The results, are stored in a list of dictionaries and written to an output file."""
+
+def evaluate_file(input_file: str) -> list[dict]:
+
+  results = [] # Initialize a list to store the results of each expression
+
+  # Open the input file for reading
+  with open(input_file, 'r') as data:
+    lines = data.readlines() # Read all lines from the input file
+
+    # Process each line (expression) in the file
+    for line in lines:
+      expression = line.strip() # Remove leading/trailing whitespace from the expression
+      if not expression:
+          continue # Skip empty lines
+      try:        
+        tokens = tokenize(expression) # Tokenize the expression into a list of tokens        
+        tree = parse(tokens) # Parse the tokens to build an abstract syntax tree (AST)        
+        tree_str, result = process_evaluation(tree) # Evaluate the AST to get the numerical result and its string representation        
+        token_string = format_tokens(tokens) # Format the tokens into a readable string
+
+      except ValueError: # Catch errors during tokenization or parsing
+        # If an error occurs, set default 'ERROR' values for output fields
+        tokens = []
+        tree_str = "ERROR"
+        token_string = "ERROR"
+        result = "ERROR"
+
+      # Store all relevant information for the current expression in a dictionary
+      result_dict = {
+        "input": expression,
+        "tree": tree_str,
+        "tokens": token_string,
+        "result": result
+        }
+
+      results.append(result_dict) # Add the dictionary to the list of results
+
+  # Writes to the output file
+  with open(output_file, 'w') as output:
+    # Write each processed result to the output file
+    for res in results:
+      output.write("Input: " + res["input"] + "\n")
+      output.write("Tree: " + res["tree"] + "\n")
+      output.write("Tokens: " + res["tokens"] + "\n")
+      output.write("Result: " + str(res["result"]) + "\n")
+      output.write("\n") # Blank line included between results for readability
+
+  return results # Return the list of processed results
+evaluate_file(input_file)
